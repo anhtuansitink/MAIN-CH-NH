@@ -325,3 +325,58 @@ end
 task.delay(180, function()
     TeleportLoop()
 end)
+
+local AutoReset = true
+createToggle("Anti Kick", 0, true, function(state)
+    AutoReset = state
+end)
+
+task.spawn(function()
+    while task.wait(13) do
+        if AutoReset and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.Health = 0
+        end
+    end
+end)
+
+-- === INVISIBLE (bản thân, giữ khi respawn) ===
+local Invisible = false
+
+local function setInvisible(state)
+    if LocalPlayer.Character then
+        for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") or part:IsA("Decal") then
+                part.LocalTransparencyModifier = state and 1 or 0
+            end
+        end
+    end
+end
+
+local getInvState, setInvState = createToggle("Invisible", 60, false, function(state)
+    Invisible = state
+    setInvisible(Invisible)
+end)
+
+-- Khi respawn, nếu Invisible đang bật thì áp lại
+LocalPlayer.CharacterAdded:Connect(function(char)
+    char:WaitForChild("HumanoidRootPart")
+    task.wait(0.2)
+    if Invisible then
+        setInvisible(true)
+    end
+end)
+
+-- === CLEAR MAP (tàng hình map) ===
+local function setMapInvisible(state)
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") or obj:IsA("Decal") then
+            if not obj:IsDescendantOf(LocalPlayer.Character) then
+                obj.LocalTransparencyModifier = state and 1 or 0
+            end
+        end
+    end
+end
+
+createToggle("Clear Map", 120, false, function(state)
+    setMapInvisible(state)
+end)
