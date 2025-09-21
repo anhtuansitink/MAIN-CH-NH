@@ -1,12 +1,33 @@
--- === CLEAR MAP (tàng hình map) ===
-local function setMapInvisible(state)
-    for _, obj in ipairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") or obj:IsA("Decal") then
-            if not obj:IsDescendantOf(LocalPlayer.Character) then
-                obj.LocalTransparencyModifier = state and 1 or 0
-            end
-        end
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- optional: nếu muốn tắt khi rời game (cleanup)
+player.AncestryChanged:Connect(function(_, parent)
+    if not parent then
+        -- client đang bị remove, nothing to do
     end
+end)
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Locations = workspace._WorldOrigin.Locations
+
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
+
+local function DistanceFromPlrSort(ObjectList: table)
+    local RootPart = getCharacter().LowerTorso
+    table.sort(ObjectList, function(ChestA, ChestB)
+        local RootPos = RootPart.Position
+        local DistanceA = (RootPos - ChestA.Position).Magnitude
+        local DistanceB = (RootPos - ChestB.Position).Magnitude
+        return DistanceA < DistanceB
+    end)
 end
 
 createToggle("Clear Map", 120, false, function(state)
