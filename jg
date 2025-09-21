@@ -219,28 +219,6 @@ end)
 
 startFarm()
 
-if player.Character then
-    onCharacterAdded(player.Character)
-end
-player.CharacterAdded:Connect(onCharacterAdded)
-
--- optional: nếu muốn tắt khi rời game (cleanup)
-player.AncestryChanged:Connect(function(_, parent)
-    if not parent then
-        -- client đang bị remove, nothing to do
-    end
-end)
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local Locations = workspace._WorldOrigin.Locations
-
-local function getCharacter()
-    if not LocalPlayer.Character then
-        LocalPlayer.CharacterAdded:Wait()
-    end
-    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    return LocalPlayer.Character
-end
-
 -- 🌍 Auto Server Hop sau 60 giây + Hiệu ứng màn hình đen
 -- By TrongNguyen  Hub
 
