@@ -1,17 +1,3 @@
-local function DistanceFromPlrSort(ObjectList: table)
-    local RootPart = getCharacter().LowerTorso
-    table.sort(ObjectList, function(ChestA, ChestB)
-        local RootPos = RootPart.Position
-        local DistanceA = (RootPos - ChestA.Position).Magnitude
-        local DistanceB = (RootPos - ChestB.Position).Magnitude
-        return DistanceA < DistanceB
-    end)
-end
-
-createToggle("Clear Map", 120, false, function(state)
-    setMapInvisible(state)
-end)
-
 local player = game.Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 
