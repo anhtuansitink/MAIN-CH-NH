@@ -259,7 +259,7 @@ local function ShowBlackScreen()
     text2.Size = UDim2.new(1,0,0.2,0)
     text2.Position = UDim2.new(0,0,0.5,0)
     text2.BackgroundTransparency = 1
-    text2.Text = "Hopping"
+    text2.Text = "ĐANG CHUYỂN ĐỔI MÁY CHỦ"
     text2.TextColor3 = Color3.fromRGB(255, 170, 0)
     text2.Font = Enum.Font.SourceSansBold
     text2.TextScaled = true
@@ -435,4 +435,5 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     if Invisible then
         setInvisible(true)
     end
+
 end)
