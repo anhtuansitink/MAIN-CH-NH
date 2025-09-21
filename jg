@@ -366,17 +366,3 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     end
 end)
 
--- === CLEAR MAP (tàng hình map) ===
-local function setMapInvisible(state)
-    for _, obj in ipairs(workspace:GetDescendants()) do
-        if obj:IsA("BasePart") or obj:IsA("Decal") then
-            if not obj:IsDescendantOf(LocalPlayer.Character) then
-                obj.LocalTransparencyModifier = state and 1 or 0
-            end
-        end
-    end
-end
-
-createToggle("Clear Map", 120, false, function(state)
-    setMapInvisible(state)
-end)
