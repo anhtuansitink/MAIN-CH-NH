@@ -1,0 +1,195 @@
+local player = game.Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "DoughOverlay"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local background = Instance.new("Frame")
+background.Size = UDim2.new(1, 0, 1, 0)
+background.BackgroundColor3 = Color3.new(0, 0, 0)
+background.BackgroundTransparency = 0.4
+background.Visible = true
+background.Parent = gui
+
+local topText = Instance.new("TextLabel")
+topText.Size = UDim2.new(1, 0, 0.1, 0)
+topText.Position = UDim2.new(0, 0, 0, 0)
+topText.BackgroundTransparency = 1
+topText.Text = "TUAN AURA HUB"
+topText.TextColor3 = Color3.fromRGB(255, 255, 255)
+topText.TextScaled = true
+topText.Font = Enum.Font.FredokaOne
+topText.Parent = background
+
+local statusText = Instance.new("TextLabel")
+statusText.Size = UDim2.new(1, 0, 0.05, 0)
+statusText.Position = UDim2.new(0, 0, 0.08, 0)
+statusText.BackgroundTransparency = 1
+statusText.Text = "Status: Farming(nhặt rương)"
+statusText.TextColor3 = Color3.fromRGB(255, 255, 255)
+statusText.TextScaled = true
+statusText.Font = Enum.Font.FredokaOne
+statusText.Parent = background
+
+local timeLabel = Instance.new("TextLabel")
+timeLabel.Size = UDim2.new(1, 0, 0.04, 0)
+timeLabel.Position = UDim2.new(0, 0, 0.9, 0)
+timeLabel.BackgroundTransparency = 1
+timeLabel.Text = "Time: 0 Hours 0 Minutes 0 Seconds"
+timeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+timeLabel.TextScaled = true
+timeLabel.Font = Enum.Font.FredokaOne
+timeLabel.Parent = background
+
+local logo = Instance.new("ImageLabel")
+logo.Size = UDim2.new(0, 200, 0, 200)
+logo.Position = UDim2.new(0.5, -100, 0.4, -100)
+logo.BackgroundTransparency = 1
+logo.Image = "rbxassetid://72072152104661"
+logo.Parent = background
+
+local infoLabel = Instance.new("TextLabel")
+infoLabel.Size = UDim2.new(0.95, 0, 0.05, 0)
+infoLabel.Position = UDim2.new(0.025, 0, 0.94, 0)
+infoLabel.BackgroundTransparency = 1
+infoLabel.TextColor3 = Color3.new(1, 1, 1)
+infoLabel.TextScaled = true
+infoLabel.Font = Enum.Font.FredokaOne
+infoLabel.Text = "Loading..."
+infoLabel.Parent = background
+
+spawn(function()
+	while wait(1) do
+		pcall(function()
+			local level = player.Data.Level.Value
+			local beli = player.Data.Beli.Value
+			local frags = player.Data.Fragments.Value
+			infoLabel.Text = "Player: " .. player.DisplayName .. " | Level: " .. level .. " | Beli: " .. beli .. " | Fragments: " .. frags
+		end)
+	end
+end)
+
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 120, 0, 40)
+toggleButton.Position = UDim2.new(0, 15, 0, 70)
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.BackgroundTransparency = 0.1
+toggleButton.BorderSizePixel = 0
+toggleButton.Text = "Open"
+toggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.TextScaled = true
+toggleButton.Font = Enum.Font.GothamSemibold
+toggleButton.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = toggleButton
+
+local isOpen = false
+toggleButton.MouseButton1Click:Connect(function()
+	isOpen = not isOpen
+	background.Visible = isOpen
+	toggleButton.Text = isOpen and "Close" or "Open"
+end)
+
+local seconds = 0
+spawn(function()
+	while wait(1) do
+		seconds += 1
+		local hrs = math.floor(seconds / 3600)
+		local mins = math.floor((seconds % 3600) / 60)
+		local secs = seconds % 60
+		timeLabel.Text = "Time: " .. hrs .. " Hours " .. mins .. " Minutes " .. secs .. " Seconds"
+	end
+end)
+-- MY_ORIGINAL_SCRIPT
+print("hello world")
+
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Locations = workspace._WorldOrigin.Locations
+
+local function getCharacter()
+    if not LocalPlayer.Character then
+        LocalPlayer.CharacterAdded:Wait()
+    end
+    LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    return LocalPlayer.Character
+end
+
+local function DistanceFromPlrSort(ObjectList: table)
+    local RootPart = getCharacter().LowerTorso
+    table.sort(ObjectList, function(ChestA, ChestB)
+        local RootPos = RootPart.Position
+        local DistanceA = (RootPos - ChestA.Position).Magnitude
+        local DistanceB = (RootPos - ChestB.Position).Magnitude
+        return DistanceA < DistanceB
+    end)
+end
+
+local UncheckedChests, FirstRun = {}, true
+local function getChestsSorted()
+    if FirstRun then
+        FirstRun = false
+        for _, Object in pairs(game:GetDescendants()) do
+            if Object.Name:find("Chest") and Object.ClassName == "Part" then
+                table.insert(UncheckedChests, Object)
+            end
+        end
+    end
+    local Chests = {}
+    for _, Chest in pairs(UncheckedChests) do
+        if Chest:FindFirstChild("TouchInterest") then
+            table.insert(Chests, Chest)
+        end
+    end
+    DistanceFromPlrSort(Chests)
+    return Chests
+end
+
+local function toggleNoclip(Toggle: boolean)
+    for _, v in pairs(getCharacter():GetChildren()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = not Toggle
+        end
+    end
+end
+
+local function Teleport(Goal: CFrame)
+    local RootPart = getCharacter().HumanoidRootPart
+    toggleNoclip(true)
+    RootPart.CFrame = Goal + Vector3.new(0, 3, 0)
+    toggleNoclip(false)
+end
+
+local function startFarm()
+    task.spawn(function()
+        while task.wait() do
+            local Chests = getChestsSorted()
+            if #Chests > 0 then
+                Teleport(Chests[1].CFrame)
+            else
+                
+            end
+        end
+    end)
+end
+
+
+task.spawn(function()
+    local rs = game:GetService("ReplicatedStorage")
+    while task.wait(5) do
+        pcall(function()
+            rs.Remotes.CommF_:InvokeServer("SetTeam","Marines")
+        end)
+    end
+end)
+
+
+LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(1) 
+    startFarm()
+end)
+
+startFarm()
