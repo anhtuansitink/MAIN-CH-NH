@@ -1,3 +1,15 @@
+
+local player = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+task.spawn(function()
+    while task.wait(1) do
+        if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+            player.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
+
 local player = game.Players.LocalPlayer
 
 local gui = Instance.new("ScreenGui")
