@@ -1,6 +1,6 @@
 - Phát nhạc khi chạy mã
 local joinSound = Instance.new("Sound", workspace)
-joinSound.SoundId = "rbxassetid://"
+joinSound.SoundId = "rbxassetid://100829101446012"
 joinSound.Volume, joinSound.Looped = 3, false
 joinSound:Play()
 end
@@ -444,4 +444,5 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     end
 
 end)
+
 
