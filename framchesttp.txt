@@ -1,10 +1,3 @@
-- Phát nhạc khi chạy mã
-local joinSound = Instance.new("Sound", workspace)
-joinSound.SoundId = "rbxassetid://100829101446012"
-joinSound.Volume, joinSound.Looped = 3, false
-joinSound:Play()
-end
-
 local player = game.Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
 
@@ -444,5 +437,3 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     end
 
 end)
-
-
